@@ -28,7 +28,25 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
 
-    const classesCollection = client.db('rythmicDb').collection('classes')
+    const classesCollection = client.db("rythmicDb").collection("classes")
+    const instructorsCollection = client.db("rythmicDb").collection("instructors")
+
+
+    app.get('/classes', async(req, res) => {
+        const query = {};
+        const options = {
+            sort: {"students": -1}
+        }
+        const result = await classesCollection.find(query, options).toArray();
+        res.send(result)
+    })
+
+
+
+    app.get('/instructors', async(req, res) => {
+        const result = await instructorsCollection.find().toArray();
+        res.send(result)
+    })
 
 
     // Send a ping to confirm a successful connection
