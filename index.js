@@ -54,7 +54,7 @@ async function run() {
       res.send(result);
     })
 
-    // here sports = all users 
+    // here alluser = all users 
     app.get('/allUser', async (req, res) => {
       const result = await userCollection.find().toArray();
       res.send(result);
@@ -135,7 +135,7 @@ async function run() {
 
       const query = { email: email }
       const user = await userCollection.findOne(query);
-      const result = { admin: user?.role === 'instructor' }
+      const result = { instructor: user?.role === 'instructor' }
       // console.log(result);
       res.send(result);
     })
@@ -162,19 +162,6 @@ async function run() {
       const updateDoc = {
         $set: {
           role: 'instructor'
-        },
-      };
-      const result = await userCollection.updateOne(query, updateDoc)
-      res.send(result)
-    })
-
-    // student role update
-    app.patch('/users/student/:id', async(req, res)=>{
-      const id = req.params.id;
-      const query = {_id: new ObjectId(id)}
-      const updateDoc = {
-        $set: {
-          role: 'student'
         },
       };
       const result = await userCollection.updateOne(query, updateDoc)
