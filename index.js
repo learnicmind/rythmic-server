@@ -48,7 +48,7 @@ async function run() {
       const result = await userCollection.find().toArray();
       res.send(result);
     })
-    
+
     app.delete('/users/:id', async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) }
@@ -62,9 +62,9 @@ async function run() {
       res.send(result);
     })
 
-    app.patch('/users/admin/:id', async(req, res)=>{
+    app.patch('/users/admin/:id', async (req, res) => {
       const id = req.params.id;
-      const query = {_id: new ObjectId(id)}
+      const query = { _id: new ObjectId(id) }
       const updateDoc = {
         $set: {
           role: 'admin'
@@ -73,29 +73,55 @@ async function run() {
       const result = await userCollection.updateOne(query, updateDoc)
       res.send(result)
     })
+    // add class : instructor
+    app.post('/addclass', async (req, res) => {
+      const className = req.body;
+      // console.log(className);
+      const result = await classesCollection.insertOne(className);
+      res.send(result);
+    })
 
+    app.get('/addclass', async (req, res) => {
+      const email = req.query.email;
+      if (!email) {
+        res.send([]);
+      }
 
-    app.get('/classes', async(req, res) => {
-        const query = {};
-        const options = {
-            sort: {"students": -1}
-        }
-        const result = await classesCollection.find(query, options).toArray();
-        res.send(result)
+      const query = { email: email };
+      console.log(query);
+      const result = await classesCollection.find(query).toArray();
+      res.send(result);
+    });
+
+    app.delete('/addclass/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const result = await classesCollection.deleteOne(query);
+      res.send(result)
     })
 
 
-    app.get('/instructors', async(req, res) => {
-        const query = {};
-        const options = {
-            sort: {"students": -1}
-        }
-        const result = await instructorsCollection.find(query, options).toArray();
-        res.send(result)
+    app.get('/classes', async (req, res) => {
+      const query = {};
+      const options = {
+        sort: { "students": -1 }
+      }
+      const result = await classesCollection.find(query, options).toArray();
+      res.send(result)
     })
 
-   
-// selected classes
+
+    app.get('/instructors', async (req, res) => {
+      const query = {};
+      const options = {
+        sort: { "students": -1 }
+      }
+      const result = await instructorsCollection.find(query, options).toArray();
+      res.send(result)
+    })
+
+
+    // selected classes
     app.post('/selectedClass', async (req, res) => {
       const item = req.body;
       console.log(item);
@@ -145,9 +171,9 @@ async function run() {
 
 
     // admin role update
-    app.patch('/users/admin/:id', async(req, res)=>{
+    app.patch('/users/admin/:id', async (req, res) => {
       const id = req.params.id;
-      const query = {_id: new ObjectId(id)}
+      const query = { _id: new ObjectId(id) }
       const updateDoc = {
         $set: {
           role: 'admin'
@@ -158,9 +184,9 @@ async function run() {
     })
 
     // instructor role update
-    app.patch('/users/instructor/:id', async(req, res)=>{
+    app.patch('/users/instructor/:id', async (req, res) => {
       const id = req.params.id;
-      const query = {_id: new ObjectId(id)}
+      const query = { _id: new ObjectId(id) }
       const updateDoc = {
         $set: {
           role: 'instructor'
@@ -183,9 +209,9 @@ run().catch(console.dir);
 
 
 app.get('/', (req, res) => {
-    res.send('rythmic is running')
+  res.send('rythmic is running')
 })
 
 app.listen(port, () => {
-    console.log(`rythmic server is running on the port: ${port}`)
+  console.log(`rythmic server is running on the port: ${port}`)
 })
