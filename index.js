@@ -26,7 +26,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
 
     const classesCollection = client.db("rythmicDb").collection("classes")
     const instructorsCollection = client.db("rythmicDb").collection("instructors")
@@ -109,6 +109,27 @@ async function run() {
       const result = await classesCollection.find(query, options).toArray();
       res.send(result)
     })
+
+    // update
+    app.patch('/classes/:id', async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) }
+      const updatedClass = req.body;
+      console.log(id, updatedToy);
+      const newClass = {
+          $set: {
+            name: updatedClass.name,
+            email: updatedClass.email,
+            banner: updatedClass.banner,
+            className: updatedClass.className,
+            price: updatedClass.price,
+            seats: updatedClass.seats
+          }
+      }
+      const result = await classesCollection.updateOne(filter, newClass);
+      res.send(result)
+  })
+
 
 
     app.get('/instructors', async (req, res) => {
