@@ -32,6 +32,7 @@ async function run() {
     const instructorsCollection = client.db("rythmicDb").collection("instructors")
     const userCollection = client.db('rythmicDb').collection('users')
     const selectedClassCollection = client.db("rythmicDb").collection('selectedClass')
+    const paymentCollection = client.db("rythmicDb").collection('payment')
 
     app.post('/users', async (req, res) => {
       const user = req.body;
@@ -161,17 +162,17 @@ async function run() {
       res.send(result);
     });
 
-    app.get('/carts/:id', async(req, res)=>{
+    app.get('/selectedClass/:id', async(req, res)=>{
       const id = req.params.id;
       const query = { _id: new ObjectId(id)}
-      const result = await cartCollection.findOne(query)
+      const result = await selectedClassCollection.findOne(query)
       res.send(result);
     })
 
     app.delete('/selectedClass/:id', async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) }
-      const result = await selectedClassCollection.deleteOne(query);
+      const result = await selected.deleteOne(query);
       res.send(result)
     })
 
@@ -244,7 +245,7 @@ async function run() {
       const insertResult = await paymentCollection.insertOne(payment);
 
       const query = { _id: { $in: payment.cartItems.map(id => new ObjectId(id)) } }
-      const deleteResult = await cartCollection.deleteOne(query)
+      const deleteResult = await selectedClassCollection.deleteOne(query)
 
       res.send({ insertResult, deleteResult });
     })
